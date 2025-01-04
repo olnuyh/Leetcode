@@ -1,30 +1,28 @@
 class Solution {
     public int countPalindromicSubsequence(String s) {
-        Set<Character> set = new HashSet();
+        int[] left = new int[26];
+        int[] right = new int[26];
 
         for (char c : s.toCharArray()) {
-            set.add(c);
+            right[c - 'a']++;
         }
 
-        int count = 0;
+        Set<Integer> set = new HashSet();
 
-        for (char c : set) {
-            int first = s.indexOf(c);
-            int end = s.lastIndexOf(c);
+        for (int i = 0; i < s.length(); i++) {
+            int k = s.charAt(i) - 'a';
 
-            if (end - first + 1 >= 3) {
-                String str = s.substring(first + 1, end);
+            right[k]--;
 
-                Set<Character> temp = new HashSet();
-
-                for (char cc : str.toCharArray()) {
-                    temp.add(cc);
+            for (int j = 0; j < 26; j++) {
+                if (left[j] > 0 && right[j] > 0) {
+                    set.add(26 * k + j);
                 }
-
-                count += temp.size();
             }
+
+            left[k]++;
         }
 
-        return count;
+        return set.size();
     }
 }
