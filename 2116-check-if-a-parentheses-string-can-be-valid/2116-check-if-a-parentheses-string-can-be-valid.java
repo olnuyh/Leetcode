@@ -4,39 +4,32 @@ class Solution {
             return false;
         }
 
-        Stack<Integer> lock = new Stack();
-        Stack<Integer> free = new Stack();
+        int minOpen = 0;
+        int maxOpen = 0;
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            char l = locked.charAt(i);
-            
-            if (l == '0') {
-                free.push(i);
+
+            if (c == '(' && locked.charAt(i) == '1') {
+                minOpen++;
+                maxOpen++;
+            } else if (c == ')' && locked.charAt(i) == '1') {
+                minOpen--;
+                maxOpen--;
             } else {
-                if (c == '(') {
-                    lock.push(i);
-                } else {
-                    if (!lock.isEmpty()) {
-                        lock.pop();
-                    } else if (!free.isEmpty()) {
-                        free.pop();
-                    } else {
-                        return false;
-                    }
-                }
+                minOpen--;
+                maxOpen++;
+            }
+
+            if (minOpen < 0) {
+                minOpen = 0;
+            }
+
+            if (maxOpen < 0) {
+                return false;
             }
         }
 
-        while (!lock.isEmpty() && !free.isEmpty() && lock.peek() < free.peek()) {
-            lock.pop();
-            free.pop();
-        }
-
-        if (lock.isEmpty() && free.size() % 2 == 0) {
-            return true;
-        }
-
-        return lock.isEmpty();
+        return minOpen == 0;
     }
 }
